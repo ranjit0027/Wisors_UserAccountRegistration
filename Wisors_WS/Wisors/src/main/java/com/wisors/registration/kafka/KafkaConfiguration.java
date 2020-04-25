@@ -1,0 +1,57 @@
+package com.wisors.registration.kafka;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+
+import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.serialization.StringSerializer;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.DefaultKafkaProducerFactory;
+import org.springframework.kafka.core.ProducerFactory;
+import org.springframework.kafka.support.serializer.JsonSerializer;
+
+//import com.wisors.registration.util.Utility;
+import com.wisors.registration.domain.WsrUserAccount;
+
+import org.springframework.kafka.core.KafkaTemplate;
+
+/**
+ * 
+ * @author Ranjit Sharma ,Wisors INC, USA
+ * @since @11-04-2020
+ * @version 1.0
+ */
+
+@Configuration
+public class KafkaConfiguration {
+
+	@Value("${kafka.broker.name}")
+	private String broker;
+
+	@Bean
+	public ProducerFactory<String, ResponseEntity<WsrUserAccount>> producerFactory() {
+
+		Map<String, Object> config = new HashMap<>();
+
+		config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, broker);
+		// config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+
+		config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+		config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+
+		return new DefaultKafkaProducerFactory(config);
+	}
+
+	@Bean
+	public KafkaTemplate<String, ResponseEntity<WsrUserAccount>> kafkaTemplate() {
+
+		return new KafkaTemplate<String, ResponseEntity<WsrUserAccount>>(producerFactory());
+
+	}
+
+}
