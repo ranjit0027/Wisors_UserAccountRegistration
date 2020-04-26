@@ -55,30 +55,28 @@ public class KafkaConfiguration {
 
 		config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, broker);
 
-		//TODO: Have to use KafkaAvroSerializer 
-		
+		// TODO: Have to use KafkaAvroSerializer
+
 		config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
 		config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
 
 		return new DefaultKafkaProducerFactory(config);
 	}
-	
 
 	@Bean
-	public ProducerFactory<String, ResponseEntity<WsrUserAccount>> responsedataProducerFactory() {
+	public ProducerFactory<String, WsrUserAccount> responsedataProducerFactory() {
 
 		Map<String, Object> config = new HashMap<>();
 
 		config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, broker);
 
-		//TODO: Have to use KafkaAvroSerializer 
-		
+		// TODO: Have to use KafkaAvroSerializer
+
 		config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
 		config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
 
 		return new DefaultKafkaProducerFactory(config);
 	}
-
 
 	@Bean
 	public KafkaTemplate<String, UserInfo> kafkaTemplate() {
@@ -93,14 +91,12 @@ public class KafkaConfiguration {
 		return new KafkaTemplate<String, String>(producerFactory2());
 
 	}
-	
 
 	@Bean
-	public KafkaTemplate<String, ResponseEntity<WsrUserAccount>> kafkaTemplate3() {
+	public KafkaTemplate<String, WsrUserAccount> kafkaTemplate3() {
 
-		return new KafkaTemplate<String, ResponseEntity<WsrUserAccount>>(responsedataProducerFactory());
+		return new KafkaTemplate<String, WsrUserAccount>(responsedataProducerFactory());
 
 	}
-
 
 }
