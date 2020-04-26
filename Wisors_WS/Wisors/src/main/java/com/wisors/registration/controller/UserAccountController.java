@@ -16,9 +16,11 @@ import javax.persistence.Convert;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 
+import org.json.HTTP;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.context.annotation.Configuration;
@@ -110,10 +112,15 @@ public class UserAccountController {
 				if (wsrUserAccount.getPhone().equals(userinfo.getWsrUserAccount().getPhone())) {
 					log.info("PHONE NO is Already Avaiable ");
 					userAvailable = true;
+					
+					//topicProducer.sendCreateUserAccountResponseMessage(null, "The User with Phone No : "
+						//	.concat(userinfo.getWsrUserAccount().getPhone()).concat(" is already registred"));
+					
 					throw new UserAccountNotFoundException("The User with Phone No : "
 							.concat(userinfo.getWsrUserAccount().getPhone()).concat(" is already registred"));
 				} else {
 					userAvailable = false;
+					//topicProducer.sendCreateUserAccountResponseMessage(null, "User IS NOT EXISTS");
 					log.error("PHONE NO IS NOT EXISTS IN DB ");
 
 				}
@@ -273,9 +280,14 @@ public class UserAccountController {
 
 			log.info("============================================");
 
-			registeredUser = ResponseEntity.ok().body(wsrUserAccountService.registerNewUser(wsrUserAccount));
+			WsrUserAccount wsrUserAct = wsrUserAccountService.registerNewUser(wsrUserAccount);
+			log.info("============================================");
+			log.info(" wsrUserAct :  " + wsrUserAct);
+			log.info("============================================");
 
-			// topicProducer.sendCreateUserMessage(registeredUser);
+			registeredUser = ResponseEntity.ok().body(wsrUserAct);
+
+			topicProducer.sendCreateUserAccountResponseMessage(wsrUserAct , null);
 		}
 
 		return registeredUser;
@@ -306,12 +318,14 @@ public class UserAccountController {
 				log.info(" User PhoneNO : " + phoneNo + " , PHONE NO In DB : " + usr.getPhone());
 				if (usr.getPhone().equalsIgnoreCase(phoneNo)) {
 					log.info("Searcing PhoneNo Found for the Requested User");
-					registeredUser = ResponseEntity.ok().body(wsrUserAccountService.getUserById(usr.getUserid()));
-					// topicProducer.sendRetriveUeserMessage(registeredUser);
+					WsrUserAccount userAccount = wsrUserAccountService.getUserById(usr.getUserid());
+					registeredUser = ResponseEntity.ok().body(userAccount);
+					topicProducer.sendRetriveUserAccountResponseMessage(userAccount , null);
 					break;
 				} else {
 					if (alreadyAvialblePhoneNo == noOfUsersAvil) {
 						log.info("Searcing PhoneNo is NoT Found for the Requested User");
+						//topicProducer.sendRetriveUserAccountResponseMessage(null,"Searcing PhoneNo is NoT Found for the Requested User");//TODO
 						throw new UserAccountNotFoundException(Integer.valueOf(phoneNo));
 
 					}
@@ -328,6 +342,7 @@ public class UserAccountController {
 		log.info(" - Get All User Accounts --.");
 
 		if (wsrUserAccountService.getUsers().size() == 0) {
+			topicProducer.sendRetriveUserAccountResponseMessage(null,"Unable to fetche ALL Users , as no registred user available");//TODO
 			throw new UserAccountNotFoundException("Unable to fetche ALL Users , as no registred user available ");
 		} else {
 			return wsrUserAccountService.getUsers();
@@ -349,6 +364,8 @@ public class UserAccountController {
 		int alreadyAvialblePhoneNo = 0;
 
 		if (noOfUsersAvil == 0) {
+			topicProducer.sendDeleteUserAccountResponseMessage(
+					"Unable to delete the phone no : ".concat(phoneNo) + ", as the user is not a registred user", HttpStatus.OK);
 			throw new UserAccountNotFoundException(
 					"Unable to delete the phone no : ".concat(phoneNo) + ", as the user is not a registred user");
 		}
@@ -360,12 +377,20 @@ public class UserAccountController {
 				if (usr.getPhone().equalsIgnoreCase(phoneNo)) {
 					log.info("MATCH phoneNo to delete with userid : " + usr.getUserid());
 					wsrUserAccountService.deleteUserById(usr.getUserid());
-					log.info(" Successfully Deleteed Account " + phoneNo);
+					log.info(" Successfully Deleted User Account " + phoneNo);
+
+					topicProducer.sendDeleteUserAccountResponseMessage(
+							"Sucessfully Deleted the registered User Account ".concat(phoneNo), HttpStatus.OK);
+
 					return new ResponseEntity<String>(
 							"Sucessfully Deleted the registered User Account ".concat(phoneNo), HttpStatus.OK);
 				} else {
 					if (alreadyAvialblePhoneNo == noOfUsersAvil) {
 						log.info("Delete PhoneNo is NoT Found for the Requested User");
+
+						topicProducer.sendDeleteUserAccountResponseMessage(
+								"No Registered User Account Available to delete ", HttpStatus.OK);
+
 						return new ResponseEntity<String>("No Registered User Account Available to delete ",
 								HttpStatus.OK);
 					}
@@ -417,6 +442,7 @@ public class UserAccountController {
 				} else {
 					if (alreadyAvialblePhoneNo == totalAvalUserAccountNos) {
 						log.info("PhoneNo : " + phoneNo + "is NoT Found for the Requested User");
+						topicProducer.sendUpdateUserAccountResponseMessage(null , "PhoneNo : " + phoneNo + "is NoT Found for the Requested User");
 						throw new UserAccountNotFoundException(Integer.valueOf(phoneNo));
 					}
 				}
@@ -519,10 +545,13 @@ public class UserAccountController {
 
 		if (userAccount != null) {
 			response = ResponseEntity.ok().body(userAccount);
-			// topicProducer.sendUpdatUeserMessage(response);
+
+			topicProducer.sendUpdateUserAccountResponseMessage(userAccount , null);
+
 			return response;
 			// break;
 		} else {
+			topicProducer.sendUpdateUserAccountResponseMessage(null , "Not able to update the User Account Information");
 			throw new UserAccountNotFoundException(userinfo.getWsrUserAccount().getUserid());
 
 		}
