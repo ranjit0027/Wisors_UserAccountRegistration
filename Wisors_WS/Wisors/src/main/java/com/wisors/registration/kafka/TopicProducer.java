@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+
+import com.wisors.registration.domain.UserInfo;
 import com.wisors.registration.domain.WsrUserAccount;
 
 /**
@@ -21,47 +23,51 @@ public class TopicProducer {
 
 	private static final Logger log = LoggerFactory.getLogger(TopicProducer.class);
 
-	@Value("${kafka.create.response.topic.name}")
+	@Value("${kafka.create.topic.name}")
 	private String TOPIC_CREATE_RESPONSE;
 
-	@Value("${kafka.update.response.topic.name}")
+	@Value("${kafka.update.topic.name}")
 	private String TOPIC_UPDATE_RESPONSE;
 
-	@Value("${kafka.retrive.response.topic.name}")
+	@Value("${kafka.retrive.topic.name}")
 	private String TOPIC_RETRIVE_RESPONSE;
 
-	@Value("${kafka.delete.response.topic.name}")
+	@Value("${kafka.delete.topic.name}")
 	private String TOPIC_DELETE_RESPONSE;
 
 	@Autowired
-	private KafkaTemplate<String, ResponseEntity<WsrUserAccount>> kafkaTemplate;
+	private KafkaTemplate<String, UserInfo> kafkaTemplate;
 
-	public void sendCreateUserMessage(ResponseEntity<WsrUserAccount> registeredUser) {
-		// log.info("Generated message: " + userAccount.toString());
+	@Autowired
+	private KafkaTemplate<String, String> kafkaTemplate2;
 
-		log.info("Generated create message: " + registeredUser.toString());
-		this.kafkaTemplate.send(TOPIC_CREATE_RESPONSE, registeredUser);
+	public void sendCreateUserMessage(UserInfo userInfo) {
+		log.info("");
+		log.info("Recived create message ===>: " + userInfo.toString());
+		log.info("");
+		
+		
+		this.kafkaTemplate.send(TOPIC_CREATE_RESPONSE, userInfo);
 	}
 
-	public void sendUpdatUeserMessage(ResponseEntity<WsrUserAccount> userAccount) {
-		// log.info("Generated message: " + userAccount.toString());
+	public void sendUpdatUeserMessage(UserInfo userinfo, String phoneNo) {
 
-		log.info("Generated update message: " + userAccount.toString());
-		this.kafkaTemplate.send(TOPIC_UPDATE_RESPONSE, userAccount);
+		log.info("Recived update message: " + userinfo.toString() + " , " + phoneNo);
+		this.kafkaTemplate.send(TOPIC_UPDATE_RESPONSE, userinfo);
 	}
 
-	public void sendRetriveUeserMessage(ResponseEntity<WsrUserAccount> registeredUser) {
-		// log.info("Generated message: " + userAccount.toString());
+	public void sendRetriveUeserMessage(String phoneno) {
 
-		log.info("Generated retrive message: " + registeredUser.toString());
-		this.kafkaTemplate.send(TOPIC_RETRIVE_RESPONSE, registeredUser);
+		log.info("");
+		log.info("Recived search message ????  : " + phoneno);
+		log.info("");
+		this.kafkaTemplate2.send(TOPIC_RETRIVE_RESPONSE, phoneno);
 	}
 
-	public void sendDeleteUeserMessage(ResponseEntity<WsrUserAccount> userAccount) {
-		// log.info("Generated message: " + userAccount.toString());
+	public void sendDeleteUeserMessage(String phoneno) {
 
-		log.info("Generated delete message: " + userAccount.toString());
-		this.kafkaTemplate.send(TOPIC_DELETE_RESPONSE, userAccount);
+		log.info("Received delete message: " + phoneno);
+		this.kafkaTemplate2.send(TOPIC_DELETE_RESPONSE, String.valueOf(phoneno));
 	}
 
 }
