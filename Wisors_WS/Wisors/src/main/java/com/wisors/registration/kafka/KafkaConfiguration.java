@@ -15,6 +15,7 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 
+import com.wisors.registration.domain.UserInfo;
 //import com.wisors.registration.util.Utility;
 import com.wisors.registration.domain.WsrUserAccount;
 
@@ -34,7 +35,7 @@ public class KafkaConfiguration {
 	private String broker;
 
 	@Bean
-	public ProducerFactory<String, ResponseEntity<WsrUserAccount>> producerFactory() {
+	public ProducerFactory<String, UserInfo> producerFactory() {
 
 		Map<String, Object> config = new HashMap<>();
 
@@ -48,10 +49,58 @@ public class KafkaConfiguration {
 	}
 
 	@Bean
-	public KafkaTemplate<String, ResponseEntity<WsrUserAccount>> kafkaTemplate() {
+	public ProducerFactory<String, String> producerFactory2() {
 
-		return new KafkaTemplate<String, ResponseEntity<WsrUserAccount>>(producerFactory());
+		Map<String, Object> config = new HashMap<>();
+
+		config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, broker);
+
+		//TODO: Have to use KafkaAvroSerializer 
+		
+		config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+		config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+
+		return new DefaultKafkaProducerFactory(config);
+	}
+	
+
+	@Bean
+	public ProducerFactory<String, ResponseEntity<WsrUserAccount>> responsedataProducerFactory() {
+
+		Map<String, Object> config = new HashMap<>();
+
+		config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, broker);
+
+		//TODO: Have to use KafkaAvroSerializer 
+		
+		config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+		config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+
+		return new DefaultKafkaProducerFactory(config);
+	}
+
+
+	@Bean
+	public KafkaTemplate<String, UserInfo> kafkaTemplate() {
+
+		return new KafkaTemplate<String, UserInfo>(producerFactory());
 
 	}
+
+	@Bean
+	public KafkaTemplate<String, String> kafkaTemplate2() {
+
+		return new KafkaTemplate<String, String>(producerFactory2());
+
+	}
+	
+
+	@Bean
+	public KafkaTemplate<String, ResponseEntity<WsrUserAccount>> kafkaTemplate3() {
+
+		return new KafkaTemplate<String, ResponseEntity<WsrUserAccount>>(responsedataProducerFactory());
+
+	}
+
 
 }
