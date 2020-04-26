@@ -67,7 +67,7 @@ public class TopicListener {
 		UserInfo userInfo = populateWsrUserAccount(userAccount);
 
 		try {
-			System.out.println("INVOKING REST CLIENT");
+			log.info("INVOKING REST CLIENT");
 			WsrUserAccount resUserAccount = restClient(isCreateMessage, userInfo, "", false);
 			log.info("WsrUserAccount : " + resUserAccount);
 		} catch (Exception e) {
@@ -90,7 +90,7 @@ public class TopicListener {
 		userInfo.getWsrUserAccount().getPhone();
 
 		try {
-			System.out.println("INVOKING REST CLIENT FOR UPDATE");
+			log.info("INVOKING REST CLIENT FOR UPDATE");
 			restClient(false, userInfo, userInfo.getWsrUserAccount().getPhone(), false);
 			log.info("WsrUserAccount Updated Sucessfully :");
 		} catch (Exception e) {
@@ -288,7 +288,7 @@ public class TopicListener {
 		userInfo.setWsrUserGroupTypeList(wsrUserGroupTypeList);
 		userInfo.setWsrUserInGroupList(wsrUsrInGrpList);
 
-		System.out.println("USERINFO : " + userInfo);
+		log.info("USERINFO : " + userInfo);
 		return userInfo;
 	}
 
@@ -304,10 +304,32 @@ public class TopicListener {
 		log.info("received data='{}' : " + phoneNumber);
 		log.info("");
 
+		char firstChar = phoneNumber.charAt(0);
+		char lastChar = phoneNumber.charAt(phoneNumber.length() - 1);
+		log.info("firstChar : " + firstChar);
+		log.info("lastChar : " + lastChar);
+		log.info("");
+
+		char specialChr = '"';
+		String phoneNo = "";
+
+		if (firstChar == specialChr && lastChar == specialChr) {
+			log.info("MATCHINNG SPECIAL CHAR");
+			for (int i = 0; i < phoneNumber.length() - 2; i++) {
+				phoneNo = phoneNo + phoneNumber.charAt(i + 1);
+			}
+			log.info("phoneNo with specialchar:" + phoneNo);
+
+		} else {
+			phoneNo = phoneNumber;
+			log.info("phoneNo without specialchar: " + phoneNo);
+		}
+
 		UserInfo userdata = null;
 		try {
-			WsrUserAccount wsrUserAccount = restClient(false, userdata, phoneNumber, isRetriveMessage);
-			log.info("");
+
+			log.info("phoneNo to be process : " + phoneNo);
+			WsrUserAccount wsrUserAccount = restClient(false, userdata, phoneNo, isRetriveMessage);
 			log.info("===== WsrUserAccount ===== >: " + wsrUserAccount);
 			log.info("");
 		} catch (Exception e) {
@@ -325,9 +347,30 @@ public class TopicListener {
 		log.info("received data='{}' : " + phoneNumber);
 		log.info("");
 
+		char firstChar = phoneNumber.charAt(0);
+		char lastChar = phoneNumber.charAt(phoneNumber.length() - 1);
+		log.info("firstChar : " + firstChar);
+		log.info("lastChar : " + lastChar);
+		log.info("");
+
+		char specialChr = '"';
+		String phoneNo = "";
+
+		if (firstChar == specialChr && lastChar == specialChr) {
+			log.info("MATCHINNG SPECIAL CHAR");
+			for (int i = 0; i < phoneNumber.length() - 2; i++) {
+				phoneNo = phoneNo + phoneNumber.charAt(i + 1);
+			}
+			log.info("phoneNo with specialchar:" + phoneNo);
+
+		} else {
+			phoneNo = phoneNumber;
+			log.info("phoneNo without specialchar: " + phoneNo);
+		}
+
 		UserInfo userdata = null;
 		try {
-			restClient(false, userdata, phoneNumber, false);
+			restClient(false, userdata, phoneNo, false);
 
 		} catch (Exception e) {
 			log.error("Exception : " + e.getMessage());
@@ -389,8 +432,6 @@ public class TopicListener {
 			log.info(" .... restClient DELETE....");
 
 			log.info("PHONE_NO : " + phoneNo);
-
-			String deleteServiceURL = "http://localhost:8080//api/registration/users/{phoneNo}";
 
 			restTemplate.delete(deleteServiceURL, phoneNo);
 		}
