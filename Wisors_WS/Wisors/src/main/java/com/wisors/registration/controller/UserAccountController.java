@@ -325,7 +325,8 @@ public class UserAccountController {
 				} else {
 					if (alreadyAvialblePhoneNo == noOfUsersAvil) {
 						log.info("Searcing PhoneNo is NoT Found for the Requested User");
-						//topicProducer.sendRetriveUserAccountResponseMessage(null,"Searcing PhoneNo is NoT Found for the Requested User");//TODO
+						System.out.println("=== topicProducer ===>: " + topicProducer);
+						topicProducer.sendRetriveUserAccountResponseMessage(null,"Searcing PhoneNo is NoT Found for the Requested User");//TODO
 						throw new UserAccountNotFoundException(Integer.valueOf(phoneNo));
 
 					}
@@ -442,6 +443,8 @@ public class UserAccountController {
 				} else {
 					if (alreadyAvialblePhoneNo == totalAvalUserAccountNos) {
 						log.info("PhoneNo : " + phoneNo + "is NoT Found for the Requested User");
+						System.out.println("=== topicProducer ????===>: " + topicProducer);
+
 						topicProducer.sendUpdateUserAccountResponseMessage(null , "PhoneNo : " + phoneNo + "is NoT Found for the Requested User");
 						throw new UserAccountNotFoundException(Integer.valueOf(phoneNo));
 					}
@@ -551,6 +554,8 @@ public class UserAccountController {
 			return response;
 			// break;
 		} else {
+			System.out.println("=== topicProducer ##### ===>: " + topicProducer);
+
 			topicProducer.sendUpdateUserAccountResponseMessage(null , "Not able to update the User Account Information");
 			throw new UserAccountNotFoundException(userinfo.getWsrUserAccount().getUserid());
 
