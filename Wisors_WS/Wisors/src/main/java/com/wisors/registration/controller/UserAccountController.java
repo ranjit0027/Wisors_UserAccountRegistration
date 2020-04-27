@@ -148,7 +148,7 @@ public class UserAccountController {
 			wsrUserAccount.setActiveflag(userinfo.getWsrUserAccount().isActiveflag());
 
 			DateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			dateformat.setTimeZone(TimeZone.getTimeZone("UTC"));
+			//dateformat.setTimeZone(TimeZone.getTimeZone("UTC"));
 
 			Date createdate = new Date();
 
@@ -475,7 +475,7 @@ public class UserAccountController {
 		wsrUserAccount.setDob(userinfo.getWsrUserAccount().getDob());
 
 		DateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		dateformat.setTimeZone(TimeZone.getTimeZone("UTC"));
+		//dateformat.setTimeZone(TimeZone.getTimeZone("UTC"));
 
 		Date updatedate = new Date();
 
