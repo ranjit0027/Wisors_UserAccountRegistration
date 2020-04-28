@@ -63,6 +63,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  * @version 1.0
  */
 
+@CrossOrigin(origins = "http://localhost:3000")
 @Configuration
 @PropertySource(ignoreResourceNotFound = true, value = "classpath:application.properties")
 @Api(value = "UserAccountController", description = "REST Apis related to User Account Registration!!!!")
