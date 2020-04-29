@@ -51,7 +51,7 @@ public class TopicListener {
 	@Value("${deleteServiceURL}")
 	private String deleteServiceURL;
 
-	@KafkaListener(topics = "${kafka.create.topic.name}", groupId = "group_id")
+	@KafkaListener(topics = "${user.registration.kafka.topic.name}", groupId = "group_id")
 	// @JsonBackReference(value="create-account")
 	public void listenCreateUserAccount(String userAccount) throws IOException {
 
@@ -76,7 +76,7 @@ public class TopicListener {
 
 	}
 
-	@KafkaListener(topics = "${kafka.update.topic.name}", groupId = "group_id")
+	@KafkaListener(topics = "${user.registration.kafka.topic.name}", groupId = "group_id")
 	public void listenUpdateUserAccount(String userAccount) throws IOException {
 
 		// log.info("received data='{}'", userAccount.toString());
@@ -292,7 +292,7 @@ public class TopicListener {
 		return userInfo;
 	}
 
-	@KafkaListener(topics = "${kafka.retrive.topic.name}", groupId = "group_id")
+	@KafkaListener(topics = "${user.registration.kafka.topic.name}", groupId = "group_id")
 	public void listenRetriveUserAccount(String phoneNumber) throws IOException {
 
 		// log.info("received data='{}'", userAccount.toString());
@@ -337,7 +337,7 @@ public class TopicListener {
 		}
 	}
 
-	@KafkaListener(topics = "${kafka.delete.topic.name}", groupId = "group_id")
+	@KafkaListener(topics = "${user.registration.kafka.topic.name}", groupId = "group_id")
 	public void listenDeleteUserAccount(String phoneNumber) throws IOException {
 
 		// log.info("received data='{}'", userAccount.toString());
