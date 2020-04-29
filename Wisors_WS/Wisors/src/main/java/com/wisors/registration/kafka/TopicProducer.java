@@ -24,29 +24,11 @@ public class TopicProducer {
 
 	private static final Logger log = LoggerFactory.getLogger(TopicProducer.class);
 
-	@Value("${kafka.create.topic.name}")
-	private String TOPIC_CREATE;
+	@Value("${user.registration.kafka.topic.name}")
+	private String REGISTRATION_TOPIC;
 
-	@Value("${kafka.update.topic.name}")
-	private String TOPIC_UPDATE;
-
-	@Value("${kafka.retrive.topic.name}")
-	private String TOPIC_RETRIVE;
-
-	@Value("${kafka.delete.topic.name}")
-	private String TOPIC_DELETE;
-
-	@Value("${kafka.create.response.topic.name}")
-	private String TOPIC_CREATE_RESPONSE;
-
-	@Value("${kafka.update.response.topic.name}")
-	private String TOPIC_UPDATE_RESPONSE;
-
-	@Value("${kafka.retrive.response.topic.name}")
-	private String TOPIC_RETRIVE_RESPONSE;
-
-	@Value("${kafka.delete.response.topic.name}")
-	private String TOPIC_DELETE_RESPONSE;
+	@Value("${user.registration.response.kafka.topic.name}")
+	private String REGISTRATION_RESPONSE_TOPIC;
 
 	@Autowired
 	private KafkaTemplate<String, UserInfo> kafkaTemplate;
@@ -62,67 +44,66 @@ public class TopicProducer {
 		log.info("Recived create message ===>: " + userInfo.toString());
 		log.info("");
 
-		this.kafkaTemplate.send(TOPIC_CREATE, userInfo);
+		this.kafkaTemplate.send(REGISTRATION_TOPIC, userInfo);
 	}
 
 	public void sendUpdatUeserMessage(UserInfo userinfo, String phoneNo) {
 
 		log.info("Recived update message: " + userinfo.toString() + " , " + phoneNo);
-		this.kafkaTemplate.send(TOPIC_UPDATE, userinfo);
+		this.kafkaTemplate.send(REGISTRATION_TOPIC, userinfo);
 	}
 
 	public void sendRetriveUeserMessage(String phoneno) {
 
 		log.info("");
-		log.info("Recived search message ????  : " + phoneno);
+		log.info("Recived search message : " + phoneno);
 		log.info("");
-		this.kafkaTemplate2.send(TOPIC_RETRIVE, phoneno);
+		this.kafkaTemplate2.send(REGISTRATION_TOPIC, phoneno);
 	}
 
 	public void sendDeleteUeserMessage(String phoneno) {
 
 		log.info("Received delete message: " + phoneno);
-		this.kafkaTemplate2.send(TOPIC_DELETE, String.valueOf(phoneno));
+		this.kafkaTemplate2.send(REGISTRATION_TOPIC, String.valueOf(phoneno));
 	}
 
-	public void sendCreateUserAccountResponseMessage(WsrUserAccount wsrUserAct , String errorMsg) {
+	public void sendCreateUserAccountResponseMessage(WsrUserAccount wsrUserAct, String errorMsg) {
 		log.info("Recived create message  ==> : " + wsrUserAct);
-		
-		if (wsrUserAct !=null && errorMsg == null) {
-			this.kafkaTemplate3.send(TOPIC_CREATE_RESPONSE, wsrUserAct);		}
-		else{
-			this.kafkaTemplate2.send(TOPIC_CREATE_RESPONSE, errorMsg);
+
+		if (wsrUserAct != null && errorMsg == null) {
+			this.kafkaTemplate3.send(REGISTRATION_RESPONSE_TOPIC, wsrUserAct);
+		} else {
+			this.kafkaTemplate2.send(REGISTRATION_RESPONSE_TOPIC, errorMsg);
 		}
 
 	}
 
-	public void sendUpdateUserAccountResponseMessage(WsrUserAccount wsrUserAct , String errorMsg) {
+	public void sendUpdateUserAccountResponseMessage(WsrUserAccount wsrUserAct, String errorMsg) {
 		log.info("Recived update message ==> : " + wsrUserAct);
-		
-		if (wsrUserAct !=null && errorMsg == null) {
-			this.kafkaTemplate3.send(TOPIC_UPDATE_RESPONSE, wsrUserAct);		}
-		else{
-			this.kafkaTemplate2.send(TOPIC_UPDATE_RESPONSE, errorMsg);
+
+		if (wsrUserAct != null && errorMsg == null) {
+			this.kafkaTemplate3.send(REGISTRATION_RESPONSE_TOPIC, wsrUserAct);
+		} else {
+			this.kafkaTemplate2.send(REGISTRATION_RESPONSE_TOPIC, errorMsg);
 		}
-		
+
 	}
 
 	public void sendRetriveUserAccountResponseMessage(WsrUserAccount wsrUserAct, String errorMsg) {
 		log.info("Recived retrive message ==> : " + wsrUserAct);
 		log.info("Recived retrive message 2==> : " + errorMsg);
-		
-		if (wsrUserAct !=null && errorMsg == null) {
-			this.kafkaTemplate3.send(TOPIC_RETRIVE_RESPONSE, wsrUserAct);			
+
+		if (wsrUserAct != null && errorMsg == null) {
+			this.kafkaTemplate3.send(REGISTRATION_RESPONSE_TOPIC, wsrUserAct);
+		} else {
+			this.kafkaTemplate2.send(REGISTRATION_RESPONSE_TOPIC, errorMsg);
 		}
-		else{
-			this.kafkaTemplate2.send(TOPIC_RETRIVE_RESPONSE, errorMsg);
-		}
-		
+
 	}
 
 	public void sendDeleteUserAccountResponseMessage(String str, HttpStatus ok) {
 		log.info("Recived delete message ==> : " + HttpStatus.OK);
-		this.kafkaTemplate2.send(TOPIC_DELETE_RESPONSE, str);
+		this.kafkaTemplate2.send(REGISTRATION_RESPONSE_TOPIC, str);
 
 	}
 
