@@ -351,7 +351,7 @@ public class UserAccountController {
 	}
 
 	@CacheEvict(value = "users", allEntries = true)
-	@DeleteMapping(value = "/{phoneNo}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@DeleteMapping(value = "/{phoneNo}")
 	public ResponseEntity<String> deleteUserAccount(@PathVariable String phoneNo) throws UserAccountNotFoundException {
 
 		log.info(" Delete Account Phone No : " + phoneNo);
