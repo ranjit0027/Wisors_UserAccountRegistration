@@ -72,17 +72,8 @@ public class KafkaController {
 	@Autowired
 	private TopicProducer topicProducer;
 
-	@Value("${kafka.create.response.topic.name}")
-	private String TOPIC_CREATE_RESPONSE;
-
-	@Value("${kafka.update.response.topic.name}")
-	private String TOPIC_UPDATE_RESPONSE;
-
-	@Value("${kafka.retrive.response.topic.name}")
-	private String TOPIC_RETRIVE_RESPONSE;
-
-	@Value("${kafka.delete.response.topic.name}")
-	private String TOPIC_DELETE_RESPONSE;
+	@Value("${user.registration.response.kafka.topic.name}")
+	private String REGISTRATION_RESPONSE_TOPIC;
 
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<WsrUserAccount> createUserAccount(@RequestBody UserInfo userinfo) {
@@ -98,7 +89,7 @@ public class KafkaController {
 
 		log.info("MESSAGE SEND to Producer");
 
-		String response = comsumeResponseEntity(TOPIC_CREATE_RESPONSE);
+		String response = comsumeResponseEntity(REGISTRATION_RESPONSE_TOPIC);
 
 		JSONObject responseobj = new JSONObject(response);
 
@@ -135,7 +126,7 @@ public class KafkaController {
 
 		log.info("MESSAGE SEND to Producer");
 
-		String response = comsumeResponseEntity(TOPIC_UPDATE_RESPONSE);
+		String response = comsumeResponseEntity(REGISTRATION_RESPONSE_TOPIC);
 
 		JSONObject responseobj = new JSONObject(response);
 
@@ -174,7 +165,7 @@ public class KafkaController {
 
 		topicProducer.sendRetriveUeserMessage(phoneNo);
 
-		String response = comsumeResponseEntity(TOPIC_RETRIVE_RESPONSE);
+		String response = comsumeResponseEntity(REGISTRATION_RESPONSE_TOPIC);
 
 		JSONObject responseobj = new JSONObject(response);
 
@@ -201,12 +192,12 @@ public class KafkaController {
 
 	}
 
-	@DeleteMapping(value = "/{phoneNo}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@DeleteMapping(value = "/{phoneNo}")
 	public ResponseEntity<String> deleteUserAccount(@PathVariable String phoneNo) {
 
 		topicProducer.sendDeleteUeserMessage(phoneNo);
 
-		String response = comsumeResponseEntity(TOPIC_DELETE_RESPONSE);
+		String response = comsumeResponseEntity(REGISTRATION_RESPONSE_TOPIC);
 
 		log.info("DELEETD RESPOSNE : " + response);
 
