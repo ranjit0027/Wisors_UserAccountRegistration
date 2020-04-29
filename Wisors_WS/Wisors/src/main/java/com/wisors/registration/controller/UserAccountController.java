@@ -112,15 +112,18 @@ public class UserAccountController {
 				if (wsrUserAccount.getPhone().equals(userinfo.getWsrUserAccount().getPhone())) {
 					log.info("PHONE NO is Already Avaiable ");
 					userAvailable = true;
-					
-					//topicProducer.sendCreateUserAccountResponseMessage(null, "The User with Phone No : "
-						//	.concat(userinfo.getWsrUserAccount().getPhone()).concat(" is already registred"));
-					
+
+					// topicProducer.sendCreateUserAccountResponseMessage(null, "The User with Phone
+					// No : "
+					// .concat(userinfo.getWsrUserAccount().getPhone()).concat(" is already
+					// registred"));
+
 					throw new UserAccountNotFoundException("The User with Phone No : "
 							.concat(userinfo.getWsrUserAccount().getPhone()).concat(" is already registred"));
 				} else {
 					userAvailable = false;
-					//topicProducer.sendCreateUserAccountResponseMessage(null, "User IS NOT EXISTS");
+					// topicProducer.sendCreateUserAccountResponseMessage(null, "User IS NOT
+					// EXISTS");
 					log.error("PHONE NO IS NOT EXISTS IN DB ");
 
 				}
@@ -148,7 +151,7 @@ public class UserAccountController {
 			wsrUserAccount.setActiveflag(userinfo.getWsrUserAccount().isActiveflag());
 
 			DateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			//dateformat.setTimeZone(TimeZone.getTimeZone("UTC"));
+			// dateformat.setTimeZone(TimeZone.getTimeZone("UTC"));
 
 			Date createdate = new Date();
 
@@ -287,7 +290,7 @@ public class UserAccountController {
 
 			registeredUser = ResponseEntity.ok().body(wsrUserAct);
 
-			topicProducer.sendCreateUserAccountResponseMessage(wsrUserAct , null);
+			topicProducer.sendCreateUserAccountResponseMessage(wsrUserAct, null);
 		}
 
 		return registeredUser;
@@ -320,13 +323,13 @@ public class UserAccountController {
 					log.info("Searcing PhoneNo Found for the Requested User");
 					WsrUserAccount userAccount = wsrUserAccountService.getUserById(usr.getUserid());
 					registeredUser = ResponseEntity.ok().body(userAccount);
-					topicProducer.sendRetriveUserAccountResponseMessage(userAccount , null);
+					topicProducer.sendRetriveUserAccountResponseMessage(userAccount, null);
 					break;
 				} else {
 					if (alreadyAvialblePhoneNo == noOfUsersAvil) {
 						log.info("Searcing PhoneNo is NoT Found for the Requested User");
-						System.out.println("=== topicProducer ===>: " + topicProducer);
-						topicProducer.sendRetriveUserAccountResponseMessage(null,"Searcing PhoneNo is NoT Found for the Requested User");//TODO
+						topicProducer.sendRetriveUserAccountResponseMessage(null,
+								"Searcing PhoneNo is NoT Found for the Requested User");// TODO
 						throw new UserAccountNotFoundException(Integer.valueOf(phoneNo));
 
 					}
@@ -343,7 +346,8 @@ public class UserAccountController {
 		log.info(" - Get All User Accounts --.");
 
 		if (wsrUserAccountService.getUsers().size() == 0) {
-			topicProducer.sendRetriveUserAccountResponseMessage(null,"Unable to fetche ALL Users , as no registred user available");//TODO
+			topicProducer.sendRetriveUserAccountResponseMessage(null,
+					"Unable to fetche ALL Users , as no registred user available");// TODO
 			throw new UserAccountNotFoundException("Unable to fetche ALL Users , as no registred user available ");
 		} else {
 			return wsrUserAccountService.getUsers();
@@ -366,7 +370,8 @@ public class UserAccountController {
 
 		if (noOfUsersAvil == 0) {
 			topicProducer.sendDeleteUserAccountResponseMessage(
-					"Unable to delete the phone no : ".concat(phoneNo) + ", as the user is not a registred user", HttpStatus.OK);
+					"Unable to delete the phone no : ".concat(phoneNo) + ", as the user is not a registred user",
+					HttpStatus.OK);
 			throw new UserAccountNotFoundException(
 					"Unable to delete the phone no : ".concat(phoneNo) + ", as the user is not a registred user");
 		}
@@ -443,9 +448,9 @@ public class UserAccountController {
 				} else {
 					if (alreadyAvialblePhoneNo == totalAvalUserAccountNos) {
 						log.info("PhoneNo : " + phoneNo + "is NoT Found for the Requested User");
-						System.out.println("=== topicProducer ????===>: " + topicProducer);
 
-						topicProducer.sendUpdateUserAccountResponseMessage(null , "PhoneNo : " + phoneNo + "is NoT Found for the Requested User");
+						topicProducer.sendUpdateUserAccountResponseMessage(null,
+								"PhoneNo : " + phoneNo + "is NoT Found for the Requested User");
 						throw new UserAccountNotFoundException(Integer.valueOf(phoneNo));
 					}
 				}
@@ -475,7 +480,7 @@ public class UserAccountController {
 		wsrUserAccount.setDob(userinfo.getWsrUserAccount().getDob());
 
 		DateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		//dateformat.setTimeZone(TimeZone.getTimeZone("UTC"));
+		// dateformat.setTimeZone(TimeZone.getTimeZone("UTC"));
 
 		Date updatedate = new Date();
 
@@ -549,14 +554,12 @@ public class UserAccountController {
 		if (userAccount != null) {
 			response = ResponseEntity.ok().body(userAccount);
 
-			topicProducer.sendUpdateUserAccountResponseMessage(userAccount , null);
+			topicProducer.sendUpdateUserAccountResponseMessage(userAccount, null);
 
 			return response;
 			// break;
 		} else {
-			System.out.println("=== topicProducer ##### ===>: " + topicProducer);
-
-			topicProducer.sendUpdateUserAccountResponseMessage(null , "Not able to update the User Account Information");
+			topicProducer.sendUpdateUserAccountResponseMessage(null, "Not able to update the User Account Information");
 			throw new UserAccountNotFoundException(userinfo.getWsrUserAccount().getUserid());
 
 		}
