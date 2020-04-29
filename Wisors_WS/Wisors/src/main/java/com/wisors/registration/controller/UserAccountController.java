@@ -407,6 +407,7 @@ public class UserAccountController {
 
 	}
 
+	/*
 	@CacheEvict(value = "users", allEntries = true)
 	@DeleteMapping(value = "/deleteall")
 	public ResponseEntity<String> deleteAllUser() {
@@ -418,7 +419,8 @@ public class UserAccountController {
 			return new ResponseEntity<String>("Sucessfully Deleted ALL Registred Users", HttpStatus.OK);
 		}
 	}
-
+	*/
+	
 	// @CachePut(value = "users", key = "#userid")
 	@CacheEvict(value = "users", allEntries = true)
 	@PutMapping(value = "/{phoneNo}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
