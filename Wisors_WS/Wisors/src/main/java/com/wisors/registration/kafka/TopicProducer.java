@@ -86,7 +86,7 @@ public class TopicProducer {
 	}
 
 	public void sendCreateUserAccountResponseMessage(WsrUserAccount wsrUserAct , String errorMsg) {
-		log.info("Recived create message  ==> : " + wsrUserAct.toString());
+		log.info("Recived create message  ==> : " + wsrUserAct);
 		
 		if (wsrUserAct !=null && errorMsg == null) {
 			this.kafkaTemplate3.send(TOPIC_CREATE_RESPONSE, wsrUserAct);		}
@@ -97,7 +97,7 @@ public class TopicProducer {
 	}
 
 	public void sendUpdateUserAccountResponseMessage(WsrUserAccount wsrUserAct , String errorMsg) {
-		log.info("Recived update message ==> : " + wsrUserAct.toString());
+		log.info("Recived update message ==> : " + wsrUserAct);
 		
 		if (wsrUserAct !=null && errorMsg == null) {
 			this.kafkaTemplate3.send(TOPIC_UPDATE_RESPONSE, wsrUserAct);		}
@@ -108,7 +108,7 @@ public class TopicProducer {
 	}
 
 	public void sendRetriveUserAccountResponseMessage(WsrUserAccount wsrUserAct, String errorMsg) {
-		log.info("Recived retrive message ==> : " + wsrUserAct.toString());
+		log.info("Recived retrive message ==> : " + wsrUserAct);
 		log.info("Recived retrive message 2==> : " + errorMsg);
 		
 		if (wsrUserAct !=null && errorMsg == null) {
